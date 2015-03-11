@@ -18,7 +18,7 @@ public class SpaceShip extends Sprite{
 		g.fillRect(x, y, width, height);
 		
 	}
-
+//i love u Aj.suthon :D
 	public void move(int direction){
 		x += (step * direction);
 		if(x < 0)
