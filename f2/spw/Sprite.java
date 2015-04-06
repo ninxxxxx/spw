@@ -9,7 +9,8 @@ public abstract class Sprite {
 	int y;
 	int width;
 	int height;
-	
+	public boolean visible = true;
+
 	public Sprite(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
@@ -21,5 +22,8 @@ public abstract class Sprite {
 	
 	public Double getRectangle() {
 		return new Rectangle2D.Double(x, y, width, height);
+	}
+	public void die(){
+		vidsible = false;
 	}
 }
