@@ -24,6 +24,6 @@ public abstract class Sprite {
 		return new Rectangle2D.Double(x, y, width, height);
 	}
 	public void die(){
-		vidsible = false;
+		visible = false;
 	}
 }

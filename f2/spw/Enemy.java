@@ -40,6 +40,6 @@ public class Enemy extends Sprite{
 		return alive;
 	}
 	public void die(){
-		vidsible = false;
+		visible = false;
 	}
 }
