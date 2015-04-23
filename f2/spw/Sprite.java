@@ -26,4 +26,10 @@ public abstract class Sprite {
 	public void die(){
 		visible = false;
 	}
+	public int getX(){
+		return x;
+	}
+	public int getY(){
+		return y;
+	} 
 }

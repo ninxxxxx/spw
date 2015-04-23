@@ -14,7 +14,8 @@ import javax.swing.Timer;
 public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	GamePanel gp;
 		
-	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();	
+	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();	
 	private SpaceShip v;	
 	
 	private Timer timer;
@@ -28,10 +29,12 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		
 		gp.sprites.add(v);
 		gp.addMouseWheelListener(this);
+		gp.addKeyListener(this);
 		timer = new Timer(50, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				bulletProcess();
 				process();
 			}
 		});
@@ -48,7 +51,22 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		gp.sprites.add(e);
 		enemies.add(e);
 	}
-	
+	private void generateBullet(){
+		Bullet b = new Bullet(v.getX() + (v.width / 2) - 2, v.getY());
+		gp.sprites.add(b);
+		bullets.add(b);
+	}
+	private void bulletProcess(){
+		Iterator<Bullet> b_it = bullets.iterator();
+		while(b_it.hasNext()){
+			Bullet b = b_it.next();
+			b.proceed();
+			if(!b.isAlive()){
+				b_it.remove();
+				gp.sprites.remove(b);
+			}
+		}
+	}
 	private void process(){
 		if(Math.random() < difficulty){
 			generateEnemy();
@@ -82,7 +100,14 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	public void die(){
 		timer.stop();
 	}
-	
+	void shot(KeyEvent e){
+		System.out.println(e.getKeyCode());
+		System.out.println(KeyEvent.VK_BACK_SPACE);
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			System.out.println("55+");
+			generateBullet();
+		}
+	}
 	void controlVehicle(MouseWheelEvent e) {
 		int notches = e.getWheelRotation();
 		if(notches < 1){
@@ -92,6 +117,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 			v.move(1);
 		}
 	}
+
 
 	public long getScore(){
 		return score;
@@ -104,7 +130,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		//do nothing
+		shot(e);
 	}
 
 	@Override
