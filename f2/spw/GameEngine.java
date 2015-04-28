@@ -30,7 +30,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		gp.sprites.add(v);
 		gp.addMouseWheelListener(this);
 		gp.addKeyListener(this);
-		timer = new Timer(50, new ActionListener() {
+		timer = new Timer(25, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -52,9 +52,12 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		enemies.add(e);
 	}
 	private void generateBullet(){
-		Bullet b = new Bullet(v.getX() + (v.width / 2) - 2, v.getY());
-		gp.sprites.add(b);
-		bullets.add(b);
+		Bullet b1 = new Bullet(v.getX(), v.getY());
+		Bullet b2 = new Bullet(v.getX() + (v.width) - Bullet.WIDTH, v.getY());
+		gp.sprites.add(b1);
+		bullets.add(b1);
+		gp.sprites.add(b2);
+		bullets.add(b2);
 	}
 	private void bulletProcess(){
 		Iterator<Bullet> b_it = bullets.iterator();
@@ -71,29 +74,54 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		if(Math.random() < difficulty){
 			generateEnemy();
 		}
-		
+		for(Bullet b : bullets){
+			b.proceed();
+		}
+
+		Rectangle2D.Double br;
+		Rectangle2D.Double er;
 		Iterator<Enemy> e_iter = enemies.iterator();
 		while(e_iter.hasNext()){
 			Enemy e = e_iter.next();
+			er = e.getRectangle();
 			e.proceed();
 			
 			if(!e.isAlive()){
 				e_iter.remove();
 				gp.sprites.remove(e);
-				score += 100;
+			}
+			Iterator<Bullet> b_iter = bullets.iterator();
+			while(b_iter.hasNext()){
+				Bullet b = b_iter.next();
+				br  = b.getRectangle();
+				if(br.intersects(er)){
+					score += 100;
+					b_iter.remove();
+					gp.sprites.remove(b);
+					e_iter.remove();
+					gp.sprites.remove(e);
+				}
+
 			}
 		}
 		
 		gp.updateGameUI(this);
 		
 		Rectangle2D.Double vr = v.getRectangle();
-		Rectangle2D.Double er;
 		for(Enemy e : enemies){
 			er = e.getRectangle();
 			if(er.intersects(vr)){
-				die();
-				return;
+				v.damaged();
+				if(!v.isAlive()){
+					die();
+					return;
+				}
 			}
+				/*br = b.getRectangle();
+				if(er.intersects(br)){
+					e.die();
+				}
+			}*/
 		}
 	}
 	

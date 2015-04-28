@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 public class SpaceShip extends Sprite{
 
 	int step = 8;
+	int hp = 3;
 	
 	public SpaceShip(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -26,5 +27,11 @@ public class SpaceShip extends Sprite{
 		if(x > 400 - width)
 			x = 400 - width;
 	}
+	public void damaged(){
+		hp--;
+	}
+	public boolean isAlive(){
+		return hp != 0;
 
+	}
 }
