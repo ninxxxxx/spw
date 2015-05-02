@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class SpaceShip extends Sprite{
-
+	private static final int INITIAL_HP = 3;
 	int step = 8;
-	int hp = 3;
+	int hp = INITIAL_HP;
 	
 	public SpaceShip(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -33,5 +33,9 @@ public class SpaceShip extends Sprite{
 	public boolean isAlive(){
 		return hp != 0;
 
+	}
+	public void setLive(){
+		if(!isAlive())
+			hp = INITIAL_HP; 
 	}
 }

@@ -13,9 +13,10 @@ import javax.swing.Timer;
 
 public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	GamePanel gp;
-		
+	private boolean gameAlive;
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();	
+	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private ArrayList<Spread> spreads = new ArrayList<Spread>();	
 	private SpaceShip v;	
 	
 	private Timer timer;
@@ -24,6 +25,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	private double difficulty = 0.1;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
+		this.gameAlive = true;
 		this.gp = gp;
 		this.v = v;		
 		
@@ -43,6 +45,12 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	}
 	
 	public void start(){
+		score = 0;
+		gp.sprites.clear();
+		v.setLive();
+		gp.sprites.add(v);
+		enemies.clear();
+		bullets.clear();
 		timer.start();
 	}
 	
@@ -59,6 +67,12 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		gp.sprites.add(b2);
 		bullets.add(b2);
 	}
+	private void generateSpread(){
+		Spread sp = new Spread((int)(Math.random()*390), 30);
+		gp.sprites.add(sp);
+		spreads.add(sp);
+
+	}
 	private void bulletProcess(){
 		Iterator<Bullet> b_it = bullets.iterator();
 		while(b_it.hasNext()){
@@ -73,11 +87,20 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	private void process(){
 		if(Math.random() < difficulty){
 			generateEnemy();
+			generateSpread();
 		}
 		for(Bullet b : bullets){
 			b.proceed();
 		}
-
+		Iterator<Spread> sp_iter = spreads.iterator(); 
+		while(sp_iter.hasNext()){
+			Spread sp = sp_iter.next();
+			sp.proceed();
+			if(!sp.isAlive()){
+				sp_iter.remove();
+				gp.sprites.remove(sp);
+			}
+		}
 		Rectangle2D.Double br;
 		Rectangle2D.Double er;
 		Iterator<Enemy> e_iter = enemies.iterator();
@@ -126,15 +149,20 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	}
 	
 	public void die(){
+		gameAlive = false;
 		timer.stop();
 	}
 	void shot(KeyEvent e){
 		System.out.println(e.getKeyCode());
-		System.out.println(KeyEvent.VK_BACK_SPACE);
-		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+		switch(e.getKeyCode())
+		{
+			case KeyEvent.VK_SPACE : generateBullet(); break;
+			case KeyEvent.VK_A : if(!gameAlive) start(); break; 
+		} 
+		/*if(e.getKeyCode() == KeyEvent.VK_SPACE){
 			System.out.println("55+");
 			generateBullet();
-		}
+		}*/
 	}
 	void controlVehicle(MouseWheelEvent e) {
 		int notches = e.getWheelRotation();
