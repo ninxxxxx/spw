@@ -25,6 +25,10 @@ public class GamePanel extends JPanel {
 		
 		big.setColor(Color.WHITE);		
 		big.drawString(String.format("%08d", reporter.getScore()), 300, 20);
+		if(!reporter.getIsRunning()){
+			big.drawString(String.format("------PAUSE------"), 155, 60 );
+			System.out.println("PAUSE");
+		}
 		for(Sprite s : sprites){
 			s.draw(big);
 		}

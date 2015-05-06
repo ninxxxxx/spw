@@ -10,10 +10,12 @@ import java.util.Iterator;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.Timer;
+import java.util.TimerTask;
 
 public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	GamePanel gp;
 	private boolean gameAlive;
+	private boolean isRunning;
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	private ArrayList<Spread> spreads = new ArrayList<Spread>();	
@@ -26,13 +28,16 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gameAlive = true;
+		// this.isRunning = false;
 		this.gp = gp;
 		this.v = v;		
 		
 		gp.sprites.add(v);
 		gp.addMouseWheelListener(this);
 		gp.addKeyListener(this);
-		timer = new Timer(25, new ActionListener() {
+		// play();
+		this.isRunning = true;
+		this.timer = new Timer(25, new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -41,8 +46,10 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 			}
 		});
 		timer.setRepeats(true);
+
 		
 	}
+
 	
 	public void start(){
 		score = 0;
@@ -52,6 +59,18 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		enemies.clear();
 		bullets.clear();
 		timer.start();
+	}
+	public void pause(){
+		this.isRunning = false;
+		this.gp.updateGameUI(this);
+		this.timer.stop();
+	}
+	public void play(){
+		this.isRunning = true;
+		this.timer.start();
+	}
+	public boolean getIsRunning(){
+		return this.isRunning;
 	}
 	
 	private void generateEnemy(){
@@ -156,8 +175,18 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		System.out.println(e.getKeyCode());
 		switch(e.getKeyCode())
 		{
-			case KeyEvent.VK_SPACE : generateBullet(); break;
-			case KeyEvent.VK_A : if(!gameAlive) start(); break; 
+			case KeyEvent.VK_SPACE : 
+				generateBullet();
+				break;
+			case KeyEvent.VK_A : 
+				if(!gameAlive) 
+					start(); 
+				break;
+			case KeyEvent.VK_Q : 
+				if(isRunning)
+					pause();
+				else play();
+				break; 
 		} 
 		/*if(e.getKeyCode() == KeyEvent.VK_SPACE){
 			System.out.println("55+");
