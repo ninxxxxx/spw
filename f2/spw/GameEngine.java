@@ -72,7 +72,9 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	public boolean getIsRunning(){
 		return this.isRunning;
 	}
-	
+	public int getLive(){
+		return v.getLive();
+	}
 	private void generateEnemy(){
 		Enemy e = new Enemy((int)(Math.random()*390), 30);
 		gp.sprites.add(e);
@@ -154,6 +156,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 			er = e.getRectangle();
 			if(er.intersects(vr)){
 				v.damaged();
+				System.out.println(v.getLive());
 				if(!v.isAlive()){
 					die();
 					return;
