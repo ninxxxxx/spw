@@ -33,7 +33,6 @@ public class GamePanel extends JPanel {
 
 	public void updateGameUI(GameReporter reporter){
 		big.clearRect(0, 0, 400, 600);
-		
 		big.setColor(Color.WHITE);		
 		big.drawString(String.format("%08d", reporter.getScore()), 300, 20);
 		isPause(reporter.getIsRunning());
@@ -41,7 +40,7 @@ public class GamePanel extends JPanel {
 		for(Sprite s : sprites){
 			s.draw(big);
 		}
-		
+		isOver(reporter.getGameAlive());
 		repaint();
 	}
 
@@ -57,11 +56,23 @@ public class GamePanel extends JPanel {
 		}
 	}
 	public void updateLive(int l){
-		int x = 0;
+		int x = 10;
 		for(int i = 0; i < l; i++){
-			x += 42	;
-			big.drawImage(live, x, 20, 40, 40, null);
+			big.drawImage(live, x, 20, 30, 30, null);
+			x += 40;
 		}
+	}
+	public void isOver(boolean gameAlive){
+		
+		if(gameAlive == false){
+			System.out.println(">>>>>>>>>>>>>>>>> : " + gameAlive);
+			big.clearRect(0, 0, 400, 600);	
+			big.drawString(String.format("GameOver"), 170, 150);
+			big.drawString(String.format("score :"  ), 160, 170);
+			big.drawString(String.format("Press A to Play again"), 140, 200);
+
+		}
+
 	}
  
 }

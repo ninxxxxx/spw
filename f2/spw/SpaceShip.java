@@ -28,7 +28,7 @@ public class SpaceShip extends Sprite{
 			x = 400 - width;
 	}
 	public void damaged(){
-		live--;
+		--live;
 	}
 	public boolean isAlive(){
 		return live != 0;

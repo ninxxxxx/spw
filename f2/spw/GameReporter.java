@@ -4,4 +4,6 @@ public interface GameReporter {
 
 	long getScore();
 	boolean getIsRunning();
+	int getLive();
+	boolean getGameAlive();
 }

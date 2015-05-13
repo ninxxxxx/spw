@@ -22,16 +22,15 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	private SpaceShip v;	
 	
 	private Timer timer;
-	
+	// private int live;
 	private long score = 0;
-	private double difficulty = 0.1;
+	private double difficulty = 0.2;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gameAlive = true;
-		// this.isRunning = false;
+		// this.live = 3
 		this.gp = gp;
 		this.v = v;		
-		
 		gp.sprites.add(v);
 		gp.addMouseWheelListener(this);
 		gp.addKeyListener(this);
@@ -46,8 +45,6 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 			}
 		});
 		timer.setRepeats(true);
-
-		
 	}
 
 	
@@ -59,6 +56,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		enemies.clear();
 		bullets.clear();
 		timer.start();
+		this.gp.updateGameUI(this);
 	}
 	public void pause(){
 		this.isRunning = false;
@@ -74,6 +72,9 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	}
 	public int getLive(){
 		return v.getLive();
+	}
+	public boolean getGameAlive(){
+		return gameAlive;
 	}
 	private void generateEnemy(){
 		Enemy e = new Enemy((int)(Math.random()*390), 30);
@@ -148,16 +149,16 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 
 			}
 		}
-		
-		gp.updateGameUI(this);
-		
+
 		Rectangle2D.Double vr = v.getRectangle();
 		for(Enemy e : enemies){
 			er = e.getRectangle();
 			if(er.intersects(vr)){
+				e.die();
 				v.damaged();
 				System.out.println(v.getLive());
 				if(!v.isAlive()){
+					gp.updateGameUI(this);
 					die();
 					return;
 				}
@@ -168,11 +169,17 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 				}
 			}*/
 		}
+		
+		gp.updateGameUI(this);
+		
+		
 	}
 	
 	public void die(){
 		gameAlive = false;
+		gp.updateGameUI(this);
 		timer.stop();
+
 	}
 	void shot(KeyEvent e){
 		System.out.println(e.getKeyCode());
