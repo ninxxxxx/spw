@@ -18,6 +18,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 	private boolean isRunning;
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private ArrayList<Laser> lasers = new ArrayList<Laser>();
 	private ArrayList<Spread> spreads = new ArrayList<Spread>();	
 	private SpaceShip v;	
 	
@@ -40,6 +41,7 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				laserProcess();
 				bulletProcess();
 				process();
 			}
@@ -89,6 +91,11 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		gp.sprites.add(b2);
 		bullets.add(b2);
 	}
+	private void generateLaser(){
+		Laser l = new Laser(5, v.getY());
+		gp.sprites.add(l);
+		lasers.add(l);
+	}
 	private void generateSpread(){
 		Spread sp = new Spread((int)(Math.random()*390), 30);
 		gp.sprites.add(sp);
@@ -103,6 +110,17 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 			if(!b.isAlive()){
 				b_it.remove();
 				gp.sprites.remove(b);
+			}
+		}
+	}
+	private void laserProcess(){
+		Iterator<Laser> l_it = lasers.iterator();
+		while(l_it.hasNext()){
+			Laser l = l_it.next();
+			l.proceed();
+			if(!l.isAlive()){
+				l_it.remove();
+				gp.sprites.remove(l);
 			}
 		}
 	}
@@ -187,6 +205,9 @@ public class GameEngine implements KeyListener,MouseWheelListener, GameReporter{
 		{
 			case KeyEvent.VK_SPACE : 
 				generateBullet();
+				break;
+			case KeyEvent.VK_L : 
+				generateLaser();
 				break;
 			case KeyEvent.VK_A : 
 				if(!gameAlive) 
